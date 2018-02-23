@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">FitTracker</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_registration">Registration</string>
+
+
+    <!-- GENERAL STRING -->
+    <string name="cancel">Cancel</string>
+    <!-- USER VALIDATION STRINGS -->
+    <string name="username_exists">Registration</string>
+</resources>
