@@ -17,7 +17,7 @@ import java.util.List;
 @Dao
 public interface UserDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addUser(User user);
+    void insertAll(User... users);
 
     @Query("SELECT * FROM user")
     public List<User> getAllUser();
@@ -29,7 +29,7 @@ public interface UserDAO {
     public User getLoginUser(String username, String password);
 
     @Query("SELECT * FROM user where username = :username AND email = :email")
-    public User checkIfUserExists(String username, String email);
+    public User checkIfUserNotExists(String username, String email);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void UpdateUser(User user);

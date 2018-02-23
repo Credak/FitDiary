@@ -2,6 +2,7 @@ package com.example.daniel.fittracker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
@@ -38,14 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         registrationbutton.setOnClickListener(this);
 
         database = AppDatabase.getDatabase(getApplicationContext());
-
-        database.userDAO().removeAllUsers();
-        List<User> users = database.userDAO().getAllUser();
-        if (users.size() == 0) {
-            database.userDAO().addUser(new User(1, "test", "test", "test@test.de"));
-            user = database.userDAO().getAllUser().get(0);
-            Toast.makeText(this, user.username, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -53,7 +46,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (hasFocus) {
             if (view == usernameEditText) {
                 String text = usernameEditText.getText().toString();
-                if (text.equals("Name")) {
+                if (text.equals("Username")) {
                     usernameEditText.setText(" ");
                 }
             } else if (view == passwordEditText) {
@@ -68,13 +61,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (view != usernameEditText) {
                     String text = usernameEditText.getText().toString();
                     if (text.equals("") || text.equals(null)) {
-                        usernameEditText.setText("Name");
+                        usernameEditText.setText(R.string.username);
                     }
                 } else if (view != passwordEditText) {
                     String text = passwordEditText.getText().toString();
                     if (text.equals("Password") || text.equals(null)) {
                         passwordEditText.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
-                        passwordEditText.setText("Password");
+                        passwordEditText.setText(R.string.password);
                     }
                 }
             }
@@ -85,13 +78,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
 
         if (view == loginbutton) {
-            Intent intentdashboard = new Intent(this, DashboardActivity.class);
-            startActivity(intentdashboard);
+            user = new User();
+            if(checkLoginUser(database, user) == null){
+            }else {
+                Intent intentdashboard = new Intent(this, DashboardActivity.class);
+                startActivity(intentdashboard);
+            }
         } else if (view == registrationbutton) {
             Intent intenteregistration = new Intent(this, RegistrationActivity.class);
             startActivity(intenteregistration);
         }
+    }
 
+    private User checkLoginUser(AppDatabase db, User user){
+        user.setUsername(usernameEditText.getText().toString());
+        user.setPassword(passwordEditText.getText().toString());
+        user = db.userDAO().getLoginUser(user.getUsername(), user.getPassword());
+        return user;
     }
 }
 

@@ -16,7 +16,7 @@
         android:layout_marginTop="1dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="@string/username"
         app:layout_constraintBottom_toTopOf="@+id/editText_Password"
         app:layout_constraintEnd_toEndOf="@+id/btn_register"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="none"
-        android:text="Password"
+        android:text="@string/password"
         app:layout_constraintBottom_toTopOf="@+id/btn_login"
         app:layout_constraintStart_toStartOf="@+id/editText_Username"
         app:layout_constraintTop_toBottomOf="@+id/editText_Username"
@@ -59,6 +59,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_login"
         app:layout_constraintTop_toBottomOf="@+id/editText_Password"
-        tools:ignore="MissingConstraints" />
+    tools:ignore="MissingConstraints" />
 
 </android.support.constraint.ConstraintLayout>

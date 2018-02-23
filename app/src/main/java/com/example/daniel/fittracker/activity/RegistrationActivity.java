@@ -3,25 +3,27 @@ package com.example.daniel.fittracker.activity;
 import android.arch.persistence.room.Database;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.renderscript.ScriptGroup;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 
-import com.example.daniel.fittracker.DataAccesObjects.UserDAO;
 import com.example.daniel.fittracker.DataObjects.User;
 import com.example.daniel.fittracker.Database.AppDatabase;
 
+import java.util.List;
 
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
-    public EditText usernameEditText;
+    private static final String TAG = RegistrationActivity.class.getName();
     private AppDatabase database;
-    private User user;
+    public User user;
+    public EditText usernameEditText;
     public EditText passwordEditText;
     public EditText emailEditText;
     public Button cancelButton;
@@ -32,15 +34,16 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_registration);
 
 
-        usernameEditText = (EditText) findViewById(R.id.editTextRegistrationUserName);
+        usernameEditText = (EditText) findViewById(R.id.editText_Username);
         usernameEditText.setOnFocusChangeListener(this);
-        passwordEditText = (EditText) findViewById(R.id.editTextRegistrationPassword);
+        passwordEditText = (EditText) findViewById(R.id.editText_Password);
         passwordEditText.setOnFocusChangeListener(this);
-        emailEditText = (EditText) findViewById(R.id.editTextRegistrationEmail);
+        emailEditText = (EditText) findViewById(R.id.editText_registrationEmail);
         emailEditText.setOnFocusChangeListener(this);
-        registrationButton = (Button)findViewById(R.id.btnregistration);
+
+        registrationButton = (Button)findViewById(R.id.btn_registration);
         registrationButton.setOnClickListener(this);
-        cancelButton = (Button) findViewById(R.id.btncancelRegistration);
+        cancelButton = (Button) findViewById(R.id.btn_cancelregistration);
         cancelButton.setOnClickListener(this);
 
         database = AppDatabase.getDatabase(getApplicationContext());
@@ -51,8 +54,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         if (hasFocus) {
             if (view == usernameEditText) {
                 String text = usernameEditText.getText().toString();
-                if (text.equals("Name")) {
-                    usernameEditText.setText(" ");
+                if (text.equals("Username")) {
+                    usernameEditText.setText("");
                 }
             } else if (view == passwordEditText) {
                 String text = passwordEditText.getText().toString();
@@ -60,19 +63,31 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     passwordEditText.setText("");
                     passwordEditText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
                 }
+            }else if(view == emailEditText){
+                String text =  emailEditText.getText().toString();
+                if(text.equals("Email")){
+                    emailEditText.setText("");
+                    emailEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                }
             }
         }
         if (!hasFocus) {
             if (view != usernameEditText) {
                 String text = usernameEditText.getText().toString();
                 if (text.equals("") || text.equals(null)) {
-                    usernameEditText.setText("Name");
+                    usernameEditText.setText(R.string.username);
                 }
             } else if (view != passwordEditText) {
                 String text = passwordEditText.getText().toString();
-                if (text.equals("Password") || text.equals(null)) {
+                if (text.equals("") || text.equals(null)) {
                     passwordEditText.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
-                    passwordEditText.setText("Password");
+                    passwordEditText.setText(R.string.password);
+                }
+            }else if(view != emailEditText){
+                String text = emailEditText.getText().toString();
+                if(text.equals("") || text.equals(null)){
+                    emailEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                    emailEditText.setText(R.string.email);
                 }
             }
         }
@@ -82,28 +97,16 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
         if (view == registrationButton) {
-
             try {
-                user = database.userDAO().checkIfUserExists(usernameEditText.getText().toString(), emailEditText.getText().toString());
-                if(user == null) {
-                    user.setEmail(emailEditText.getText().toString());
-                    user.setUsername(usernameEditText.getText().toString());
-                    user.setPassword(passwordEditText.getText().toString());
-                    database.userDAO().addUser(user);
+                user = new User();
+                if(checkIfUserNotExists(database, user)){
+                    addUser(database, user);
+                    Log.d(RegistrationActivity.TAG, "Created user with Username: " + user.getUsername());
                 }else{
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                    builder.setMessage(R.string.username_exists)
-                            .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.cancel();
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    Log.d(RegistrationActivity.TAG, "A user with this Email / Username already exists");
                 }
                 }catch(Exception e){
-                System.out.println(e.getStackTrace());
+                e.printStackTrace();
             }
 
             Intent intentdashboard = new Intent(this, LoginActivity.class);
@@ -112,5 +115,22 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             Intent intenteregistration = new Intent(this, LoginActivity.class);
             startActivity(intenteregistration);
         }
+    }
+
+    private User addUser(final AppDatabase db, User user){
+        user.setPassword(passwordEditText.getText().toString());
+        user.setUsername(usernameEditText.getText().toString());
+        user.setEmail(emailEditText.getText().toString());
+        db.userDAO().insertAll(user);
+        return user;
+    }
+    private boolean checkIfUserNotExists(final AppDatabase db, User user){
+        user.setUsername(usernameEditText.getText().toString());
+        user.setEmail(emailEditText.getText().toString());
+        user = db.userDAO().checkIfUserNotExists(user.getUsername(), user.getEmail());
+        if (user == null) {
+            return true;
+        }
+        return false;
     }
 }

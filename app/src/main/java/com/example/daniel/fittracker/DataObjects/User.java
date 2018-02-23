@@ -9,22 +9,17 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class User {
     @PrimaryKey(autoGenerate = true)
-    public final int id;
+    private int id;
 
-    public String username;
-    public String password;
-    public String email;
-
-    public User(int id, String username, String password, String email){
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
+    private String username;
+    private String password;
+    private String email;
     public int getId() {
         return id;
     }
-
+    public void setId(int id) {
+        this.id = id;
+    }
     public String getUsername() {
         return username;
     }

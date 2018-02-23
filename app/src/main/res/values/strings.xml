@@ -8,7 +8,13 @@
 
 
     <!-- GENERAL STRING -->
+    <string name="login">Login</string>
+    <string name="registration">Registration</string>
     <string name="cancel">Cancel</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+
     <!-- USER VALIDATION STRINGS -->
     <string name="username_exists">Registration</string>
 </resources>
