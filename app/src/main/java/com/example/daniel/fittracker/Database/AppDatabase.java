@@ -27,6 +27,7 @@ public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase INSTANCE;
 
+    public static final String DATABASE_NAME = "fitdiary-db";
     public abstract UserDAO userDAO();
     public abstract ExerciseDAO exerciseDAO();
     public abstract ExerciseProgressDAO exerciseProgressDAO();
@@ -34,9 +35,8 @@ public abstract class AppDatabase extends RoomDatabase{
 
     public static AppDatabase getDatabase(Context context){
         if(INSTANCE == null){
-            INSTANCE = Room.databaseBuilder(context, AppDatabase.class, "userdatabase")
+            INSTANCE = Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
                     .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration()
                     .build();
         }
         return INSTANCE;
