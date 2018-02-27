@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.daniel.fittracker.R;
+import com.example.daniel.fittracker.json.JSONHandler;
 
 /**
  * Created by Daniel on 25.02.2018.
@@ -20,6 +21,9 @@ public class FoodFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        JSONHandler jsonHandler = new JSONHandler();
+        jsonHandler.makeJsonRequest(this.getActivity().getApplicationContext());
     }
 
 

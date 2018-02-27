@@ -7,7 +7,8 @@
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
     tools:context="com.example.daniel.fittracker.activity.LoginActivity"
-    tools:layout_editor_absoluteY="81dp">
+    tools:layout_editor_absoluteY="81dp"
+    android:focusableInTouchMode="true">
 
     <EditText
         android:id="@+id/editText_Username"
