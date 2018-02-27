@@ -15,6 +15,7 @@ import android.widget.EditText;
 
 import com.example.daniel.fittracker.DataObjects.User;
 import com.example.daniel.fittracker.Database.AppDatabase;
+import com.example.daniel.fittracker.R;
 
 import java.util.List;
 
@@ -34,9 +35,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_registration);
 
 
-        usernameEditText = (EditText) findViewById(R.id.editText_Username);
+        usernameEditText = (EditText) findViewById(R.id.editText_registrationUserName);
         usernameEditText.setOnFocusChangeListener(this);
-        passwordEditText = (EditText) findViewById(R.id.editText_Password);
+        passwordEditText = (EditText) findViewById(R.id.editText_registrationPassword);
         passwordEditText.setOnFocusChangeListener(this);
         emailEditText = (EditText) findViewById(R.id.editText_registrationEmail);
         emailEditText.setOnFocusChangeListener(this);
